@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import process from 'node:process';
 dotenv.config();
 // Set the desired polling interval (in milliseconds)
-const POLLING_INTERVAL = 120000; // Two minutes
+const POLLING_INTERVAL = 300000; // Five minutes
 const API_ENDPOINT = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson";
 // Create a Bsky Agent 
 const agent = new BskyAgent({
@@ -22,8 +22,8 @@ async function pollApi() {
         // Check if the response is successful
         if (response.ok) {
             const data = await response.json();
-            // Get the current time minus two minutes
-            const twoMinutesAgo = Date.now() - (2 * 60 * 1000);
+            // Get the current time minus five minutes
+            const twoMinutesAgo = Date.now() - (5 * 60 * 1000);
             // Parse earthquake data
             for (const feature of data.features) {
                 const earthquakeTime = feature.properties.time;
