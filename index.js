@@ -27,10 +27,11 @@ async function pollApi() {
             // Parse earthquake data
             for (const feature of data.features) {
                 const earthquakeTime = feature.properties.time;
+                const location = feature.properties.place;
                 // Check if the earthquake happened within the last two minutes
                 if (earthquakeTime >= twoMinutesAgo) {
+                    console.log("Recent earthquake occured:");
                     const magnitude = feature.properties.mag;
-                    const location = feature.properties.place;
                     const coordinates = feature.geometry.coordinates;
                     const latitude = coordinates[1];
                     const longitude = coordinates[0];
@@ -60,7 +61,7 @@ async function pollApi() {
                     });
                 }
                 else {
-                    console.log("This earthquake happened a while ago, so we won't post anything to Bluesky.");
+                    console.log(`This earthquake ${location} happened a while ago, so we won't post anything.`);
                 }
             }
         }
