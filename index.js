@@ -38,7 +38,7 @@ async function pollApi() {
                     const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
                     // Check if the first word in the location contains "km"
                     const firstWord = location.split(' ')[0];
-                    const prefix = firstWord.includes('km') ? 'in' : '';
+                    const prefix = firstWord.includes('km') ? '' : 'in';
                     const earthquakeDescription = `A ${magnitude} magnitude earthquake occurred ${prefix}${location}. Map: ${googleMapsUrl}`;
                     console.log(earthquakeDescription);
                     await agent.post({
