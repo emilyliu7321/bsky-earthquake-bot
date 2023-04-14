@@ -23,13 +23,13 @@ async function pollApi() {
         if (response.ok) {
             const data = await response.json();
             // Get the current time minus five minutes
-            const twoMinutesAgo = Date.now() - (5 * 60 * 1000);
+            const minutesAgo = Date.now() - (5 * 60 * 1000);
             // Parse earthquake data
             for (const feature of data.features) {
                 const earthquakeTime = feature.properties.time;
                 const location = feature.properties.place;
                 // Check if the earthquake happened within the last two minutes
-                if (earthquakeTime >= twoMinutesAgo) {
+                if (earthquakeTime >= minutesAgo) {
                     console.log("Recent earthquake occured:");
                     const magnitude = feature.properties.mag;
                     const coordinates = feature.geometry.coordinates;
@@ -38,7 +38,8 @@ async function pollApi() {
                     const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
                     // Check if the first word in the location contains "km"
                     const firstWord = location.split(' ')[0];
-                    const prefix = firstWord.includes('km') ? '' : 'in';
+                    const secondWord = location.split(' ')[1];
+                    const prefix = firstWord.includes('km') ? '' : secondWord.includes('km') ? '' : 'in ';
                     const earthquakeDescription = `A ${magnitude} magnitude earthquake occurred ${prefix}${location}. Map: ${googleMapsUrl}`;
                     console.log(earthquakeDescription);
                     await agent.post({
