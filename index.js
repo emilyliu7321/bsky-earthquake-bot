@@ -33,9 +33,9 @@ async function pollApi() {
                 const id = feature.id;
                 const earthquakeTime = feature.properties.time;
                 const location = feature.properties.place;
+                const magnitude = feature.properties.mag;
                 // Check if the earthquake ID has not been seen before
-                if (!existingIds.has(id)) {
-                    const magnitude = feature.properties.mag;
+                if (!existingIds.has(id) && magnitude >= 3.5) {
                     const coordinates = feature.geometry.coordinates;
                     const latitude = coordinates[1];
                     const longitude = coordinates[0];
@@ -69,8 +69,11 @@ async function pollApi() {
                         },
                     });
                 }
-                else {
-                    console.log(`This earthquake ${location} has already been logged, so we won't post anything to Bluesky.`);
+                else if (existingIds.has(id)) {
+                    console.log(`This earthquake ${location} happened a while ago, so we won't post anything to Bluesky.`);
+                }
+                else if (magnitude < 3.5) {
+                    console.log(`This earthquake ${location} was only ${magnitude}, so we won't post anything to Bluesky.`);
                 }
             }
         }
