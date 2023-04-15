@@ -5,6 +5,7 @@ import process from 'node:process';
 import fs from 'fs';
 
 dotenv.config();
+const port = process.env.PORT || "8080";
 
 // Set the desired polling interval (in milliseconds)
 const POLLING_INTERVAL = 120000; // Two minutes
@@ -52,12 +53,14 @@ async function pollApi(): Promise<void> {
           const latitude = coordinates[1];
           const longitude = coordinates[0];
           const googleMapsUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
+          const quakeDetails = feature.properties.url;
 
           // Check if the first word in the location contains "km"
           const firstWord = location.split(' ')[0];
           const secondWord = location.split(' ')[1];
           const prefix = firstWord.includes('km') ? '' : secondWord.includes('km') ? '' : 'in ';
-          const earthquakeDescription = `A ${magnitude} magnitude earthquake occurred ${prefix}${location}. Map: ${googleMapsUrl}`
+          // const earthquakeDescription = `A ${magnitude} magnitude earthquake occurred ${prefix}${location}. Map: ${googleMapsUrl}`
+          const earthquakeDescription = `A ${magnitude} magnitude earthquake occurred ${prefix}${location}. \n 🗺 Map \n 🔍 Details`
 
           console.log(earthquakeDescription);
           // Add the earthquake ID to the existingIds Set
@@ -69,19 +72,16 @@ async function pollApi(): Promise<void> {
             text: earthquakeDescription,
             entities: [
               {
-                index: { start: earthquakeDescription.indexOf('Map: ') + 5, end: earthquakeDescription.indexOf(googleMapsUrl) +googleMapsUrl.length+1 },
+                index: { start: earthquakeDescription.indexOf('🗺 '), end: earthquakeDescription.indexOf('Map')+3},
                 type: 'link',
                 value: googleMapsUrl,
               },
-            ],
-            embed: {
-              $type: 'app.bsky.embed.external',
-              external: {
-                uri: googleMapsUrl,
-                title: "Earthquake coordinates",
-                description: "Earthquake coordinates",
+              {
+                index: { start: earthquakeDescription.indexOf('🔍 '), end: earthquakeDescription.indexOf('Details')+7},
+                type: 'link',
+                value: quakeDetails,
               },
-            },
+            ],
           });
         }
         else if (existingIds.has(id)){
