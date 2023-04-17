@@ -36,7 +36,7 @@ async function pollApi() {
                 const location = feature.properties.place;
                 const magnitude = feature.properties.mag;
                 // Check if the earthquake ID has not been seen before
-                if (!existingIds.has(id) && magnitude >= 3.5) {
+                if (!existingIds.has(id) && magnitude >= 5.0) {
                     const coordinates = feature.geometry.coordinates;
                     const latitude = coordinates[1];
                     const longitude = coordinates[0];
